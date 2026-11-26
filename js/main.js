@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
   
-  // ---------- Simple Form Validation ----------
+  // ---------- Form Validation (Allows Formspree to handle submission) ----------
   const contactForm = document.getElementById('contactForm');
   
   if (contactForm) {
@@ -88,11 +88,11 @@ document.addEventListener('DOMContentLoaded', function() {
       const requiredFields = contactForm.querySelectorAll('[required]');
       
       requiredFields.forEach(field => {
-        field.style.borderColor = '';
+        field.style.borderColor = ''; // Reset border color
         
         if (!field.value.trim()) {
           isValid = false;
-          field.style.borderColor = '#E53E3E';
+          field.style.borderColor = '#E53E3E'; // Red border if empty
         }
         
         // Email validation
@@ -100,18 +100,19 @@ document.addEventListener('DOMContentLoaded', function() {
           const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
           if (!emailRegex.test(field.value.trim())) {
             isValid = false;
-            field.style.borderColor = '#E53E3E';
+            field.style.borderColor = '#E53E3E'; // Red border if invalid email
           }
         }
       });
       
+      // If invalid, stop Formspree from submitting
       if (!isValid) {
         e.preventDefault();
         alert('Please fill in all required fields correctly.');
       }
+      // If valid, the form submits normally to Formspree and redirects to thank-you.html
     });
   }
-  
   // ---------- Header Shadow on Scroll ----------
   const header = document.querySelector('.header');
   
