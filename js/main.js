@@ -1,7 +1,8 @@
 /* ============================================
    YOGA AND PEACE — Main JavaScript
    Mobile menu, smooth scroll, FAQ accordion,
-   form validation. Lightweight & accessible.
+   Google Sheets form submission. 
+   Lightweight & accessible.
    ============================================ */
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -79,11 +80,14 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
   
-  // ---------- Form Validation (Allows Formspree to handle submission) ----------
+  // ---------- Form Submission to Google Sheets ----------
   const contactForm = document.getElementById('contactForm');
   
   if (contactForm) {
     contactForm.addEventListener('submit', function(e) {
+      e.preventDefault(); // Stop page from reloading
+      
+      // 1. Basic Validation
       let isValid = true;
       const requiredFields = contactForm.querySelectorAll('[required]');
       
@@ -104,15 +108,41 @@ document.addEventListener('DOMContentLoaded', function() {
           }
         }
       });
-      
-      // If invalid, stop Formspree from submitting
+
+      // Stop if invalid
       if (!isValid) {
-        e.preventDefault();
         alert('Please fill in all required fields correctly.');
+        return;
       }
-      // If valid, the form submits normally to Formspree and redirects to thank-you.html
+
+      // 2. Google Script URL
+      const scriptURL = 'https://script.google.com/macros/s/AKfycbx-XL76xff180sJFTn1-G3i_hwtFOW_7SZIJPAMkPdYAlWPvp05cMoEwdBLr-ncDQfr0w/exec'; 
+      
+      const formData = new FormData(contactForm);
+      const submitBtn = contactForm.querySelector('button[type="submit"]');
+      
+      // 3. Change button text to show it's working
+      const originalText = submitBtn.innerText;
+      submitBtn.innerText = 'Sending...';
+      submitBtn.disabled = true;
+
+      // 4. Send data to Google Sheets
+      fetch(scriptURL, { method: 'POST', body: formData })
+        .then(response => {
+          // 5. Success! Clear form and redirect to Thank You page
+          contactForm.reset();
+          window.location.href = 'thank-you.html';
+        })
+        .catch(error => {
+          // 6. If it fails, show an error and re-enable the button
+          alert('Oops! Something went wrong. Please try again or call us directly.');
+          submitBtn.innerText = originalText;
+          submitBtn.disabled = false;
+          console.error('Error!', error.message);
+        });
     });
   }
+
   // ---------- Header Shadow on Scroll ----------
   const header = document.querySelector('.header');
   
