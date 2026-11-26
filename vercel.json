@@ -1,8 +1,9 @@
 {
-  "rewrites": [
+  "redirects": [
     {
-      "source": "/your-path",
-      "destination": "/api/redirect"
+      "source": "/:path*",
+      "destination": "https://www.your-destination-website.com",
+      "permanent": false
     }
   ]
 }
