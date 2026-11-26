@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/your-path",
+      "destination": "/api/redirect"
+    }
+  ]
+}
