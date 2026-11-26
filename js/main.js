@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
   
-  // ---------- Form Submission to Google Sheets ----------
+   // ---------- Form Submission to Google Sheets ----------
   const contactForm = document.getElementById('contactForm');
   
   if (contactForm) {
@@ -118,7 +118,6 @@ document.addEventListener('DOMContentLoaded', function() {
       // 2. Google Script URL
       const scriptURL = 'https://script.google.com/macros/s/AKfycbx-XL76xff180sJFTn1-G3i_hwtFOW_7SZIJPAMkPdYAlWPvp05cMoEwdBLr-ncDQfr0w/exec'; 
       
-      const formData = new FormData(contactForm);
       const submitBtn = contactForm.querySelector('button[type="submit"]');
       
       // 3. Change button text to show it's working
@@ -126,21 +125,30 @@ document.addEventListener('DOMContentLoaded', function() {
       submitBtn.innerText = 'Sending...';
       submitBtn.disabled = true;
 
-      // 4. Send data to Google Sheets
-      // FIX: Added mode: 'no-cors' to prevent Google's redirect from triggering the catch block
+      // 4. Manually format data as URL-encoded (Fixes the Google Sheets collection issue)
+      const data = new URLSearchParams();
+      data.append('name', document.getElementById('name').value);
+      data.append('email', document.getElementById('email').value);
+      data.append('phone', document.getElementById('phone').value);
+      data.append('interest', document.getElementById('interest').value);
+      data.append('message', document.getElementById('message').value);
+
+      // 5. Send data to Google Sheets
       fetch(scriptURL, { 
         method: 'POST', 
-        body: formData,
-        mode: 'no-cors' 
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: data 
       })
       .then(() => {
-        // 5. Success! Clear form and redirect to Thank You page
-        // Note: With no-cors, we can't read the response, but we know it sent.
+        // 6. Success! Clear form and redirect to Thank You page
         contactForm.reset();
         window.location.href = 'thank-you.html';
       })
       .catch(error => {
-        // 6. If it truly fails (network down), show error
+        // 7. If it truly fails, show error
         alert('Oops! Something went wrong. Please try again or call us directly.');
         submitBtn.innerText = originalText;
         submitBtn.disabled = false;
@@ -148,7 +156,6 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
   }
-
   // ---------- Header Shadow on Scroll ----------
   const header = document.querySelector('.header');
   
