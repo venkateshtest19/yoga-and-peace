@@ -127,19 +127,25 @@ document.addEventListener('DOMContentLoaded', function() {
       submitBtn.disabled = true;
 
       // 4. Send data to Google Sheets
-      fetch(scriptURL, { method: 'POST', body: formData })
-        .then(response => {
-          // 5. Success! Clear form and redirect to Thank You page
-          contactForm.reset();
-          window.location.href = 'thank-you.html';
-        })
-        .catch(error => {
-          // 6. If it fails, show an error and re-enable the button
-          alert('Oops! Something went wrong. Please try again or call us directly.');
-          submitBtn.innerText = originalText;
-          submitBtn.disabled = false;
-          console.error('Error!', error.message);
-        });
+      // FIX: Added mode: 'no-cors' to prevent Google's redirect from triggering the catch block
+      fetch(scriptURL, { 
+        method: 'POST', 
+        body: formData,
+        mode: 'no-cors' 
+      })
+      .then(() => {
+        // 5. Success! Clear form and redirect to Thank You page
+        // Note: With no-cors, we can't read the response, but we know it sent.
+        contactForm.reset();
+        window.location.href = 'thank-you.html';
+      })
+      .catch(error => {
+        // 6. If it truly fails (network down), show error
+        alert('Oops! Something went wrong. Please try again or call us directly.');
+        submitBtn.innerText = originalText;
+        submitBtn.disabled = false;
+        console.error('Error!', error.message);
+      });
     });
   }
 
