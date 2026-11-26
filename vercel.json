@@ -1,9 +1,5 @@
 {
   "redirects": [
-    {
-      "source": "/:path*",
-      "destination": "https://www.your-destination-website.com",
-      "permanent": false
-    }
+    
   ]
 }
