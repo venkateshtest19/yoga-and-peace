@@ -1,16 +1,5 @@
 {
   "redirects": [
-    {
-      "source": "/",
-      "destination": "https://srushtidegreecollege.com/",
-      "permanent": false
-    },
-    {
-      "source": "/:path*",
-      "destination": "https://srushtidegreecollege.com/",
-      "permanent": false
-    }
-
-
+    
   ]
 }
